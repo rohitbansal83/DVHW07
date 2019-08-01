@@ -68,6 +68,12 @@ body {
   shape-rendering: crispEdges;
 }
 
+#yyyy{
+	position:absolute;
+	top:185px;
+	left:40px;
+}
+
 #next{
 	position:absolute;
 	top:520px;
@@ -87,30 +93,50 @@ body {
 </head>
 <body onload='init()'>
   <H1> Water Crisis in Chennai</H1>
-  <p>Since the rainfall is decreasing, government has been filling up water reservoir with
-    the river water received from state of Karnataka. But has it been adequate? We decided to
-    look at that as well. Following graph shows that the average daily water level in reservoir
-    has also met with a <b style="color:red">steep decline</b> as well. </p>
-    <H2 align = "middle"> Avg. Daily Water Level in Reserviors</H2>
-    <div id="next">
-  <input name="next"
-   type="button"
-   value="Next"
-   onclick="window.location.href = 'https://rohitbansal83.github.io/DVHW07/water_crisis_interactive_scene.html';" />
-  </div>
-  <div id="prev">
-  <input name="prev"
-   type="button"
-   value="Prev"
-   onclick="window.location.href = 'https://rohitbansal83.github.io/DVHW07/index.html';" />
-  </div>
+  <p> It is clear from the previous two graphs that current reservoir system is not working and
+		situation has reached to crisis level. Though the state of Karnataka has been helping the help has been varying. Here is the chart
+		where you can analyze how yearly different reservoirs has performed with respect to rainfall.
+		On little analysis you will find that the help received is <b style="color:red"> not enough!</b>
+		Government must find other ways of dealing	with this crisis. Few of the things can be done are:
+		<ul>
+ 			<li>Rainwater harvesting in residential buildings</li>
+ 			<li>Spreading more awareness regarding the ways of saving water</li>
+ 			<li>Getting more river water released from State of Karnataka</li>
+		</ul>
+		</p>
+		<select id="yyyy">
+		<option value="2018" selected="selected">2018</option>
+		<option value="2017">2017</option>
+		<option value="2016">2016</option>
+		<option value="2015">2015</option>
+		<option value="2014">2014</option>
+		<option value="2013">2013</option>
+		<option value="2012">2012</option>
+		<option value="2011">2011</option>
+		<option value="2010">2010</option>
+		<option value="2009">2009</option>
+		<option value="2008">2008</option>
+		</select>
+		<div id="next">
+	<input name="next"
+	 type="button"
+	 disabled = True
+	 value="Next"
+	 onclick="showAll()" />
+</div>
+<div id="prev">
+	<input name="prev"
+	 type="button"
+	 value="Prev"
+	 onclick="window.location.href = 'https://rohitbansal83.github.io/DVHW07/water_crisis_chennai.html';" />
+</div>
 <script type="text/javascript">
 async function init() {
-const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_reservoir_level_10_years.csv');
+const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_watercrisis_10_years.csv');
 
 var margin = {top: 20, right: 50, bottom: 50, left: 100},
     width = 960 - margin.left - margin.right;
-    height = 375 - margin.top - margin.bottom;
+    height = 300 - margin.top - margin.bottom;
 
 var y = d3.scaleLinear().domain([0,2600]).range([height,0]);
 var x = d3.scaleLinear().domain([2007,2019]).range([0,width]);

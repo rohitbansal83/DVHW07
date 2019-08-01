@@ -50,7 +50,18 @@ body {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+#next{
+	position:absolute;
+	top:520px;
+	left:900px;
 
+}
+#prev{
+	position:absolute;
+	top:520px;
+	left:40px;
+
+}
 
 </style>
 <Title> Water Crisis in Chennai</Title>
@@ -63,18 +74,27 @@ body {
     drinking water is one of the biggest expenses for poor. In such a scenario we decided to highlight
     the crisis with the help of real statistics. Following graph shows the rainfall in mm in the
     area in which city's four major water reservoir are situated. We can see there is a
-    <b style="color:red"> clear and very steep decline</b> in the rain due to climate change.
-	<a href = "https://rohitbansal83.github.io/DVHW07/water_crisis_chennai.html"> next</a></p>
-
+    <b style="color:red"> clear and very steep decline</b> in the rain due to climate change.</p>
     <H2 align = "middle"> Rainfall Trend in Water Reservoir Area</H2>
+		<div id="next">
+  <input name="next"
+   type="button"
+   value="Next"
+   onclick="window.location.href = 'https://rohitbansal83.github.io/DVHW07/water_crisis_chennai.html';" />
+  </div>
+  <div id="prev">
+  <input name="prev"
+ 	 disabled = True
+   type="button"
+   value="Prev" />
+  </div>
 <script type="text/javascript">
-
 async function init() {
 const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_rainfall_10_years.csv');
 
 var margin = {top: 20, right: 50, bottom: 50, left: 100},
     width = 900 - margin.left - margin.right;
-    height = 400 - margin.top - margin.bottom;
+    height = 350 - margin.top - margin.bottom;
 
 var y = d3.scaleLinear().domain([0,2100]).range([height,0]);
 var x = d3.scaleLinear().domain([2007,2019]).range([0,width]);
