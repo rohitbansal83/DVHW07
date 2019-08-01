@@ -88,7 +88,7 @@ body {
    type="button"
    value="Prev" />
   </div>
-<script type="text/javascript">
+	<script type="text/javascript">
 async function init() {
 const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_rainfall_10_years.csv');
 
@@ -139,6 +139,11 @@ var ly = margin.top;
 var legend = svg.append('g')
                 .attr("transform", "translate("+ lx +","+ ly+ ")");
 
+var div = svg.selectAll("div")
+                  .data(data);
+var tooltip;
+var tooltext;
+
 d3.select('svg').append('g')
   .attr("class", "axis axis--y")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -174,7 +179,7 @@ svg.append("path")
     .datum(data)
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("class", "line")
-    .attr("d", line)
+	    .attr("d", line)
     .attr("data-legend","test");
 
 svg.append("path")
@@ -201,28 +206,37 @@ dots.enter().append("circle")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("cx", function(d, i) {  return x(parseInt(d.Rainfall_Year)); })
         .attr("cy", function(d) { return y(parseInt(d.Rainfall_CHEMBARAMBAKKAM)); })
-        .attr("r", 3);
+        .attr("r", 3)
+				.on("mouseover", function(d){return drawTooltip(d.Rainfall_Year, d.Rainfall_CHEMBARAMBAKKAM);})
+        .on("mouseout", removeTooltip);
 
 dots.enter().append("circle")
       .attr("class", "dot")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("cx", function(d, i) {  return x(parseInt(d.Rainfall_Year)); })
       .attr("cy", function(d) { return y(parseInt(d.Rainfall_REDHILLS)); })
-      .attr("r", 3);
+      .attr("r", 3)
+			.on("mouseover", function(d){return drawTooltip(d.Rainfall_Year, d.Rainfall_REDHILLS);})
+			.on("mouseout", removeTooltip);
 
 dots.enter().append("circle")
       .attr("class", "dot")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("cx", function(d, i) {  return x(parseInt(d.Rainfall_Year)); })
       .attr("cy", function(d) { return y(parseInt(d.Rainfall_CHOLAVARAM)); })
-      .attr("r", 3);
+      .attr("r", 3)
+			.on("mouseover", function(d){return drawTooltip(d.Rainfall_Year, d.Rainfall_CHOLAVARAM);})
+			.on("mouseout", removeTooltip);
 
 dots.enter().append("circle")
       .attr("class", "dot")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .attr("cx", function(d, i) {  return x(parseInt(d.Rainfall_Year)); })
       .attr("cy", function(d) { return y(parseInt(d.Rainfall_POONDI)); })
-      .attr("r", 3);
+      .attr("r", 3)
+			.on("mouseover", function(d){return drawTooltip(d.Rainfall_Year, d.Rainfall_POONDI);})
+			.on("mouseout", removeTooltip);
+
 
 area.forEach(function(area, i) {
   var legendRow = legend.append("g")
@@ -238,6 +252,32 @@ area.forEach(function(area, i) {
   .attr("text-anchor","end")
   .text(area);
 });
+
+function removeTooltip() {
+  tooltip.style('display', 'none');
+	tooltext.style('display', 'none')
+
+}
+
+function drawTooltip(l1,l2) {
+	w = margin.left+x(parseInt(l1));
+	h = margin.top+y(parseInt(l2));
+	l3 = ""+l2;
+	tooltip = div.enter().append("rect")
+ .attr("transform", "translate(" + w + "," + h + ")")
+	.attr("width",60)
+	.attr("height",28)
+	.attr("fill","lightgrey");
+
+	tooltext = div.enter().append("text")
+	.attr("transform", "translate(" + w + "," + h + ")")
+  .attr("x",10)
+  .attr("y",10)
+	.attr("dy", ".35em")
+	.text(l3);
+
+}
+
 }
 </script>
 </body>
