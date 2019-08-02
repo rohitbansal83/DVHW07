@@ -111,15 +111,15 @@ var line = d3.line()
         .x(function(d) { return x(parseInt(d.Rainfall_Year)); })
         .y(function(d) { return y(parseInt(d.Rainfall_POONDI)); });
 
-var line2 = d3.line()
+var line4 = d3.line()
         .x(function(d) { return x(parseInt(d.Rainfall_Year)); })
         .y(function(d) { return y(parseInt(d.Rainfall_CHOLAVARAM)); });
 
-var line3 = d3.line()
+var line2 = d3.line()
         .x(function(d) { return x(parseInt(d.Rainfall_Year)); })
         .y(function(d) { return y(parseInt(d.Rainfall_REDHILLS)); });
 
-var line4 = d3.line()
+var line3 = d3.line()
         .x(function(d) { return x(parseInt(d.Rainfall_Year)); })
         .y(function(d) { return y(parseInt(d.Rainfall_CHEMBARAMBAKKAM)); });
 
@@ -131,7 +131,7 @@ var dots = svg.selectAll(".dot")
                   .data(data);
 
 var colors = ["steelblue", "orange", "grey", "green"];
-var area = ["Poondi", "Cholavaram", "Redhills", "Chembarambakkam"];
+var area = ["Poondi",  "Redhills", "Chembarambakkam", "Cholavaram",];
 
 var lx = width + margin.left;
 var ly = margin.top;
@@ -179,8 +179,7 @@ svg.append("path")
     .datum(data)
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("class", "line")
-	    .attr("d", line)
-    .attr("data-legend","test");
+	    .attr("d", line);
 
 svg.append("path")
     .datum(data)

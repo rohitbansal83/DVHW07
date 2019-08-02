@@ -53,7 +53,6 @@ body {
 
 #yyyy{
 	position:absolute;
-	top:190px;
 	left:50px;
 	width:75px;
 	height: 30px;
@@ -88,7 +87,7 @@ body {
  			<li>Getting more river water released from State of Karnataka</li>
 		</ul>
 		</p>
-		<select id="yyyy">
+		<select id="yyyy" onchange="populateData()">
 		<option value="2018" selected="selected">2018</option>
 		<option value="2017" color =  white>2017</option>
 		<option value="2016">2016</option>
@@ -120,20 +119,36 @@ body {
 async function init() {
 const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_watercrisis_10_years.csv');
 
+var rldata = data["rl2018"];
+var rfdata = data["rf2018"];
+
 var margin = {top: 20, right: 50, bottom: 50, left: 100},
     width = 960 - margin.left - margin.right;
     height = 300 - margin.top - margin.bottom;
 
-var y = d3.scaleLinear().domain([0,2600]).range([height,0]);
-var x = d3.scaleLinear().domain([2007,2019]).range([0,(width/2)-10]);
+var y1 = d3.scaleLinear().domain([0,2000]).range([height,0]);
+var y2 = d3.scaleLinear().domain([0,2600]).range([height,0]);
+var x1 = d3.scaleBand()
+					.domain(["Poondi",  "Redhills", "Chembarambakkam", "Cholavaram"])
+					.range([0,(width/2)-10])
+					.paddingInner(0.3)
+					.paddingOuter(0.2);
+//var x2 = d3.scaleBand().domain(["Poondi", "Cholavaram", "Redhills", "Chembarambakkam"]).range([(width/2)+10, width]);
+
+var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+
+var x2pos = margin.left+(width/2)+10;
 
 var t = height + margin.top;
 
-var txw = (width/2) + margin.left;
-var txh = height + margin.top + 50;
+var txw = (width/4) ;
+var txh = margin.top ;
 
-var tyh = margin.top+25;
-var tyw = -300;
+var tyh = margin.top;
+var tyw = (3*width/4);
+
 
 var line = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
@@ -151,34 +166,48 @@ var line4 = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
         .y(function(d) { return y(parseInt(d.CHEMBARAMBAKKAM)); });
 
-var svg = d3.select("body").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom);
 
 var dots = svg.selectAll(".dot")
                   .data(data);
 
 var colors = ["steelblue", "orange", "grey", "green"];
-var area = ["Poondi", "Cholavaram", "Redhills", "Chembarambakkam"];
+var area = ["Poondi",  "Redhills", "Chembarambakkam", "Cholavaram",];
 
-var lx = width + margin.left;
+var lx = width + margin.left+margin.right;
 var ly = margin.top;
 
 var legend = svg.append('g')
                 .attr("transform", "translate("+ lx +","+ ly+ ")");
 
+
+
+
 d3.select('svg').append('g')
   .attr("class", "axis axis--y")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  .call(d3.axisLeft(y)
-  .tickValues([0,200,400,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600]).tickFormat(d3.format('0')));
+  .call(d3.axisLeft(y1)
+  .tickValues([0,200,400,600,800,1000,1200,1400,1600,1800,2000]).tickFormat(d3.format('0')));
+
 
 d3.select('svg').append('g')
   .attr("class", "axis axis--x")
   .attr("transform", "translate(" + margin.left + "," + t + ")")
-  .call(d3.axisBottom(x)
-  .tickValues([2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019])
-  .tickFormat(d3.format('0')));
+  .call(d3.axisBottom(x1)
+  .tickValues(area));
+
+
+	d3.select('svg').append('g')
+	  .attr("class", "axis axis--y")
+	  .attr("transform", "translate(" + x2pos + "," + margin.top + ")")
+	  .call(d3.axisLeft(y2)
+	  .tickValues([0,200,400,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600]).tickFormat(d3.format('0')));
+
+	d3.select('svg').append('g')
+	  .attr("class", "axis axis--x")
+	  .attr("transform", "translate(" + x2pos + "," + t + ")")
+	  .call(d3.axisBottom(x1)
+	  .tickValues(area));
+
 
 svg.append("text")
     .attr("x", txw )
@@ -186,7 +215,7 @@ svg.append("text")
     .style("font-family", "sans-serif")
     .style("font-size", 20)
     .style("font-weight","bold")
-    .text("Year");
+    .text("Rainfall");
 
 svg.append("text")
         .attr("x", tyw )
@@ -194,10 +223,25 @@ svg.append("text")
         .style("font-family", "sans-serif")
         .style("font-size", 20)
         .style("font-weight","bold")
-        .text("Avg. Daily Water Level (in mm)")
-        .attr("transform", "rotate(-90)" );
+        .text("Reservoir Water Level");
+
+				area.forEach(function(area, i) {
+				  var legendRow = legend.append("g")
+				                        .attr("transform", "translate(-10," + (i*20) + ")");
+				  legendRow.append("rect")
+				  .attr("width",10)
+				  .attr("height",10)
+				  .attr("fill",colors[i]);
+
+				  legendRow.append("text")
+				  .attr("x",-10)
+				  .attr("y",10)
+				  .attr("text-anchor","end")
+				  .text(area);
+				});
 
 
+/*
 svg.append("path")
     .datum(data)
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -252,21 +296,17 @@ dots.enter().append("circle")
       .attr("cy", function(d) { return y(parseInt(d.POONDI)); })
       .attr("r", 3);
 
-area.forEach(function(area, i) {
-  var legendRow = legend.append("g")
-                        .attr("transform", "translate(0," + (i*20) + ")");
-  legendRow.append("rect")
-  .attr("width",10)
-  .attr("height",10)
-  .attr("fill",colors[i]);
-
-  legendRow.append("text")
-  .attr("x",-10)
-  .attr("y",10)
-  .attr("text-anchor","end")
-  .text(area);
-});
+*/
 }
+function populateData() {
+  var local_x = document.getElementById("yyyy").value;
+	var rl = "rl"+local_x;
+	var rf = "rf"+local_x;
+	rfdata = data[rf]
+	rldata = data[rl]
+
+}
+
 </script>
 </body>
 </html>

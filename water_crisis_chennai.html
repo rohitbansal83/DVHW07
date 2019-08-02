@@ -127,15 +127,15 @@ var line = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
         .y(function(d) { return y(parseInt(d.POONDI)); });
 
-var line2 = d3.line()
+var line4 = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
         .y(function(d) { return y(parseInt(d.CHOLAVARAM)); });
 
-var line3 = d3.line()
+var line2 = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
         .y(function(d) { return y(parseInt(d.REDHILLS)); });
 
-var line4 = d3.line()
+var line3 = d3.line()
         .x(function(d) { return x(parseInt(d.Year)); })
         .y(function(d) { return y(parseInt(d.CHEMBARAMBAKKAM)); });
 
@@ -147,7 +147,7 @@ var dots = svg.selectAll(".dot")
                   .data(data);
 
 var colors = ["steelblue", "orange", "grey", "green"];
-var area = ["Poondi", "Cholavaram", "Redhills", "Chembarambakkam"];
+var area = ["Poondi", "Redhills", "Chembarambakkam","Cholavaram"];
 
 var lx = width + margin.left;
 var ly = margin.top;
