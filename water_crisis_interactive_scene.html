@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
 <style type="text/css">
 
@@ -228,7 +228,7 @@ svg.append("text")
 								.attr('height', function(d){return height-y1(parseInt(d.rf2018));})
 								.attr("fill",function(d,i){return colors[i];})
 								.on("mouseover", function(d,i){return drawTooltip1(d.rf2018,i,1);})
-				        .on("mouseout", removeTooltip);
+				        .on("mouseout", removeTooltip)								;
 
 			bar2 = d3.select('svg').append('g')
 							.attr("transform", "translate(" + x2pos + "," + margin.top + ")")
@@ -258,6 +258,30 @@ svg.append("text")
 							.attr("text-anchor","end")
 							.text(area);
 						});
+
+						const annotations = [
+						        {
+						          note: {
+						            title: "Select Year",
+												align: "left"
+						          },
+											connector: {
+            end: "arrow"
+          },
+						          x: 110,
+						          y: 0,
+						          dy: 20,
+						          dx: 0
+						        }];
+
+						const makeAnnotations = d3.annotation()
+					          .type(d3.annotationLabel)
+					          .annotations(annotations);
+
+					        d3.select("svg")
+					          .append("g")
+					          .attr("class", "annotation-group")
+					          .call(makeAnnotations);
 
 
 }

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
 <style type="text/css">
 
@@ -277,6 +278,46 @@ function drawTooltip(l1,l2) {
 	.text(l3);
 
 }
+
+const annotations = [
+				{
+					note: {
+						title: "Avg. Rain",
+						label: "1635.5 mm",
+						align: "left"
+					},
+					connector: {
+end: "arrow"
+},
+					x: 162,
+					y: 80,
+					dy: -35,
+					dx: 0
+				},
+				{
+					note: {
+						title: "Avg. Rain",
+						label: "10.25 mm",
+						align: "left"
+					},
+					connector: {
+	end: "arrow"
+	},
+					x: 788,
+					y: 297,
+					dy: -35,
+					dx: 0
+				}];
+
+const makeAnnotations = d3.annotation()
+				.type(d3.annotationLabel)
+				.annotations(annotations);
+
+			d3.select("svg")
+				.append("g")
+				.attr("class", "annotation-group")
+				.call(makeAnnotations);
+
 
 }
 </script>
