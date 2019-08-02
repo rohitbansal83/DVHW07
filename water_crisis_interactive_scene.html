@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
 <style type="text/css">
 
@@ -56,7 +57,12 @@ body {
 	left:50px;
 	width:75px;
 	height: 30px;
-	background-color: lightblue
+	background-color: lightblue;
+	font-weight: bold;
+}
+
+#yyyy:hover {
+  background-color: steelblue;
 }
 
 #next{
@@ -76,15 +82,17 @@ body {
 </head>
 <body onload='init()'>
   <H1> Water Crisis in Chennai</H1>
-  <p> It is clear from the previous two graphs that current reservoir system is not working and
-		situation has reached to crisis level. Though the state of Karnataka has been helping the help has been varying. Here is the chart
-		where you can analyze how yearly different reservoirs has performed with respect to rainfall.
-		On little analysis you will find that the help received is <b style="color:red"> not enough!</b>
-		Government must find other ways of dealing	with this crisis. Few of the things can be done are:
+  <p> It is clear from the previous two graphs that the current reservoir system is not working.
+		The situation has reached a crisis level. Though the state of Karnataka has been helping,
+		the help has been varying. Here is the chart where you can analyze how different reservoirs
+		have performed yearly with respect to rainfall even after receiving help from
+		the State of Karnataka. With little analysis, you will find that the help received is
+		<b style="color:red"> not enough!</b>	The government must find other ways of dealing with
+		this crisis. Few of the things that can be done are:
 		<ul>
  			<li>Rainwater harvesting in residential buildings</li>
- 			<li>Spreading more awareness regarding the ways of saving water</li>
- 			<li>Getting more river water released from State of Karnataka</li>
+ 			<li>Spreading more awareness regarding the ways for saving water</li>
+ 			<li>Getting more river water released from the State of Karnataka</li>
 		</ul>
 		</p>
 		<select id="yyyy" onchange="populateData()">
@@ -134,8 +142,12 @@ var x2pos = margin.left+(width/2)+10;
 
 var bar1;
 var bar2;
+var tooltip;
+var tooltext;
+var div;
 async function init() {
 const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_watercrisis_10_years.csv');
+
 
 gdata = data;
 
@@ -143,7 +155,8 @@ var svg = d3.select("body").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom);
 
-
+div = svg.selectAll("div")
+                  .data(data);
 var t = height + margin.top;
 
 var txw = (width/4) ;
@@ -213,7 +226,9 @@ svg.append("text")
 								.attr('y',function(d){return  y1(parseInt(d.rf2018));})
 								.attr('width', 25)
 								.attr('height', function(d){return height-y1(parseInt(d.rf2018));})
-								.attr("fill",function(d,i){return colors[i];});
+								.attr("fill",function(d,i){return colors[i];})
+								.on("mouseover", function(d,i){return drawTooltip1(d.rf2018,i,1);})
+				        .on("mouseout", removeTooltip);
 
 			bar2 = d3.select('svg').append('g')
 							.attr("transform", "translate(" + x2pos + "," + margin.top + ")")
@@ -225,7 +240,9 @@ svg.append("text")
 								.attr('y',function(d){ return  y2(parseInt(d.rl2018));})
 								.attr('width', 25)
 								.attr('height', function(d){return height-y2(parseInt(d.rl2018));})
-								.attr("fill",function(d,i){return colors[i];});
+								.attr("fill",function(d,i){return colors[i];})
+								.on("mouseover", function(d,i){return drawTooltip1(d.rl2018,i,2);})
+				        .on("mouseout", removeTooltip);
 
 						area.forEach(function(area, i) {
 							var legendRow = legend.append("g")
@@ -264,7 +281,9 @@ function populateData() {
 						.attr('y',function(d){return  y1(parseInt(d[local_rf]));})
 						.attr('width', 25)
 						.attr('height', function(d){return height-y1(parseInt(d[local_rf]));})
-						.attr("fill",function(d,i){return colors[i];});
+						.attr("fill",function(d,i){return colors[i];})
+						.on("mouseover", function(d,i){return drawTooltip1(d[local_rf],i,1);})
+						.on("mouseout", removeTooltip);
 
 	bar2 = d3.select('svg').append('g')
 					.attr("transform", "translate(" + x2pos + "," + margin.top + ")")
@@ -275,7 +294,41 @@ function populateData() {
 						.attr('y',function(d){ return  y2(parseInt(d[local_rl]));})
 						.attr('width', 25)
 						.attr('height', function(d){return height-y2(parseInt(d[local_rl]));})
-						.attr("fill",function(d,i){return colors[i];});
+						.attr("fill",function(d,i){return colors[i];})
+						.on("mouseover", function(d,i){return drawTooltip1(d[local_rl],i,2);})
+						.on("mouseout", removeTooltip);
+
+}
+function removeTooltip() {
+  tooltip.style('display', 'none');
+	tooltext.style('display', 'none')
+
+}
+
+function drawTooltip1(l1, i, flag) {
+if (flag == 1){
+	h = margin.top+y1(parseInt(l1))-30;
+w = ""+(x1(area[i])+margin.left);
+}
+else{
+	h = margin.top+y2(parseInt(l1))-30;
+w = ""+(x1(area[i])+x2pos);
+}
+
+	l3 = ""+Math.round(l1);
+
+	tooltip = div.enter().append("rect")
+ .attr("transform", "translate(" + w + "," + h + ")")
+	.attr("width",60)
+	.attr("height",28)
+	.attr("fill","lightgrey");
+
+	tooltext = div.enter().append("text")
+	.attr("transform", "translate(" + w + "," + h + ")")
+  .attr("x",10)
+  .attr("y",10)
+	.attr("dy", ".35em")
+	.text(l3);
 
 }
 
