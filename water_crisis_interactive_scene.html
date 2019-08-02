@@ -116,12 +116,9 @@ body {
 	 onclick="window.location.href = 'https://rohitbansal83.github.io/DVHW07/water_crisis_chennai.html';" />
 </div>
 <script type="text/javascript">
-async function init() {
-const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_watercrisis_10_years.csv');
-
-var rldata = data["rl2018"];
-var rfdata = data["rf2018"];
-
+var gdata;
+var colors = ["steelblue", "orange", "grey", "green"];
+var area = ["Poondi",  "Redhills", "Chembarambakkam", "Cholavaram",];
 var margin = {top: 20, right: 50, bottom: 50, left: 100},
     width = 960 - margin.left - margin.right;
     height = 300 - margin.top - margin.bottom;
@@ -133,13 +130,23 @@ var x1 = d3.scaleBand()
 					.range([0,(width/2)-10])
 					.paddingInner(0.3)
 					.paddingOuter(0.2);
+var x2pos = margin.left+(width/2)+10;
+
+var bar1;
+var bar2;
+async function init() {
+const data = await d3.csv('https://rohitbansal83.github.io/DVHW07/chennai_watercrisis_10_years.csv');
+
+console.log(data);
+gdata = data;
+console.log(gdata);
+
 //var x2 = d3.scaleBand().domain(["Poondi", "Cholavaram", "Redhills", "Chembarambakkam"]).range([(width/2)+10, width]);
 
 var svg = d3.select("body").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom);
 
-var x2pos = margin.left+(width/2)+10;
 
 var t = height + margin.top;
 
@@ -149,29 +156,6 @@ var txh = margin.top ;
 var tyh = margin.top;
 var tyw = (3*width/4);
 
-
-var line = d3.line()
-        .x(function(d) { return x(parseInt(d.Year)); })
-        .y(function(d) { return y(parseInt(d.POONDI)); });
-
-var line2 = d3.line()
-        .x(function(d) { return x(parseInt(d.Year)); })
-        .y(function(d) { return y(parseInt(d.CHOLAVARAM)); });
-
-var line3 = d3.line()
-        .x(function(d) { return x(parseInt(d.Year)); })
-        .y(function(d) { return y(parseInt(d.REDHILLS)); });
-
-var line4 = d3.line()
-        .x(function(d) { return x(parseInt(d.Year)); })
-        .y(function(d) { return y(parseInt(d.CHEMBARAMBAKKAM)); });
-
-
-var dots = svg.selectAll(".dot")
-                  .data(data);
-
-var colors = ["steelblue", "orange", "grey", "green"];
-var area = ["Poondi",  "Redhills", "Chembarambakkam", "Cholavaram",];
 
 var lx = width + margin.left+margin.right;
 var ly = margin.top;
@@ -225,20 +209,58 @@ svg.append("text")
         .style("font-weight","bold")
         .text("Reservoir Water Level");
 
-				area.forEach(function(area, i) {
-				  var legendRow = legend.append("g")
-				                        .attr("transform", "translate(-10," + (i*20) + ")");
-				  legendRow.append("rect")
-				  .attr("width",10)
-				  .attr("height",10)
-				  .attr("fill",colors[i]);
 
-				  legendRow.append("text")
-				  .attr("x",-10)
-				  .attr("y",10)
-				  .attr("text-anchor","end")
-				  .text(area);
-				});
+
+
+	/*d3.select('svg').append('g')
+				  .attr("transform", "translate(" + margin.left + "," + t + ")")
+					.selectAll('rect')
+					.data(data)
+					.enter()
+					.append('rect')
+						.attr('x',function(d,i){return x1(area[i]);})
+						.attr('y',function(d){return y1(d.rf2018);})
+						.attr('width', 25)
+						.attr('height', function(d) {return t-y1(d.rf2018);})
+						.attr("fill",function(d,i){return colors[i];});*/
+			bar1 = d3.select('svg').append('g')
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+							.selectAll('rect')
+							.data(data)
+							.enter()
+							.append('rect')
+								.attr('x',function(d,i){return x1(area[i])+25;})
+								.attr('y',function(d){return  y1(parseInt(d.rf2018));})
+								.attr('width', 25)
+								.attr('height', function(d){return height-y1(parseInt(d.rf2018));})
+								.attr("fill",function(d,i){return colors[i];});
+
+			bar2 = d3.select('svg').append('g')
+							.attr("transform", "translate(" + x2pos + "," + margin.top + ")")
+							.selectAll('rect')
+							.data(data)
+							.enter()
+							.append('rect')
+								.attr('x',function(d,i){return x1(area[i])+25;})
+								.attr('y',function(d){ return  y2(parseInt(d.rl2018));})
+								.attr('width', 25)
+								.attr('height', function(d){return height-y2(parseInt(d.rl2018));})
+								.attr("fill",function(d,i){return colors[i];});
+
+						area.forEach(function(area, i) {
+							var legendRow = legend.append("g")
+																		.attr("transform", "translate(-10," + (i*20) + ")");
+							legendRow.append("rect")
+							.attr("width",10)
+							.attr("height",10)
+							.attr("fill",colors[i]);
+
+							legendRow.append("text")
+							.attr("x",-10)
+							.attr("y",10)
+							.attr("text-anchor","end")
+							.text(area);
+						});
 
 
 /*
@@ -297,13 +319,41 @@ dots.enter().append("circle")
       .attr("r", 3);
 
 */
+
+
 }
+
 function populateData() {
   var local_x = document.getElementById("yyyy").value;
-	var rl = "rl"+local_x;
-	var rf = "rf"+local_x;
-	rfdata = data[rf]
-	rldata = data[rl]
+	var local_rf = "rf"+local_x;
+	var local_rl = "rl"+local_x;
+	console.log(local_x);
+
+	bar1.style('display', 'none');
+	bar2.style('display', 'none');
+
+
+	bar1 = d3.select('svg').append('g')
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+					.selectAll('rect')
+					.data(gdata).enter()
+					.append('rect')
+						.attr('x',function(d,i){return x1(area[i])+25;})
+						.attr('y',function(d){return  y1(parseInt(d[local_rf]));})
+						.attr('width', 25)
+						.attr('height', function(d){return height-y1(parseInt(d[local_rf]));})
+						.attr("fill",function(d,i){return colors[i];});
+
+	bar2 = d3.select('svg').append('g')
+					.attr("transform", "translate(" + x2pos + "," + margin.top + ")")
+					.selectAll('rect')
+					.data(gdata).enter()
+					.append('rect')
+						.attr('x',function(d,i){return x1(area[i])+25;})
+						.attr('y',function(d){ return  y2(parseInt(d[local_rl]));})
+						.attr('width', 25)
+						.attr('height', function(d){return height-y2(parseInt(d[local_rl]));})
+						.attr("fill",function(d,i){return colors[i];});
 
 }
 
